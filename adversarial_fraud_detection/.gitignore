@@ -1,0 +1,45 @@
+# Virtual environment
+.fraud-venv/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Data files (large)
+data/*.csv
+data/*.zip
+
+# Model files
+models/*.pkl
+models/*.joblib
+
+# Reports output
+reports/*.pdf
+reports/*.html
+!reports/template.html
+
+# OS files
+.DS_Store
+Thumbs.db
+nul
+
+# Claude Code
+.claude/
