@@ -34,7 +34,7 @@ When resuming, tell Claude Code:
 
 | Step | Owner | Task | Command/Action |
 |------|-------|------|----------------|
-| 1 | **[HUMAN]** | Accept PaySim dataset terms | Visit https://www.kaggle.com/datasets/ntnu-testimon/paysim1 and click Download |
+| 1 | **[HUMAN]** | Accept PaySim dataset terms | Visit https://www.kaggle.com/datasets/mtalaltariq/paysim-data and click Download |
 | 2 | **[HUMAN]** | Verify kaggle.json exists | Check `C:\Users\prana\.kaggle\kaggle.json` |
 | 3 | **[CC]** | Download dataset | Run `python data/paysim_download.py` |
 | 4 | **[CC]** | Verify data tests pass | Run `pytest tests/test_data.py` |

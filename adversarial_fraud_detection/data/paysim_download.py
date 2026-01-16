@@ -11,7 +11,7 @@ TARGET_COL = 'isFraud'
 
 # Path configuration
 DATA_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_NAME = 'ntnu-testimon/paysim1'
+DATASET_NAME = 'mtalaltariq/paysim-data'
 CSV_FILENAME = 'PS_20174392719_1491204439457_log.csv'
 
 
