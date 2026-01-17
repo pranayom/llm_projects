@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SR 11-7 Model Risk Assessment Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .report-container {
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            border-bottom: 3px solid #1a365d;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #1a365d;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        .meta-item {
+            text-align: center;
+        }
+        .meta-item .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .meta-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a365d;
+        }
+        h2 {
+            color: #1a365d;
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        h3 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .executive-summary {
+            background: #e6f3ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border-left: 4px solid #1a365d;
+        }
+        .risk-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .risk-low { background: #c6f6d5; color: #22543d; }
+        .risk-medium { background: #fefcbf; color: #744210; }
+        .risk-high { background: #fed7d7; color: #742a2a; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a365d;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .metric-card {
+            display: inline-block;
+            width: 30%;
+            margin: 1%;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .metric-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a365d;
+        }
+        .metric-card .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .chart-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-container img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .findings-list {
+            list-style: none;
+            padding: 0;
+        }
+        .findings-list li {
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-left: 3px solid #1a365d;
+        }
+        .recommendation {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="header">
+            <h1>SR 11-7 Model Risk Assessment Report</h1>
+            <div class="subtitle">Adversarial Robustness Evaluation - Fraud Detection System</div>
+        </div>
+
+        <div class="meta-info">
+            <div class="meta-item">
+                <div class="label">Report Date</div>
+                <div class="value">{{ report_date }}</div>
+            </div>
+            <div class="meta-item">
+                <div class="label">Model Version</div>
+                <div class="value">{{ model_version }}</div>
+            </div>
+            <div class="meta-item">
+                <div class="label">Assessment Type</div>
+                <div class="value">Red Team</div>
+            </div>
+            <div class="meta-item">
+                <div class="label">Risk Level</div>
+                <div class="value">
+                    <span class="risk-indicator risk-{{ risk_level }}">{{ risk_level|upper }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="executive-summary">
+            <h3>Executive Summary</h3>
+            <p>{{ executive_summary }}</p>
+        </div>
+
+        <h2>1. Model Performance Metrics</h2>
+        <div style="text-align: center;">
+            <div class="metric-card">
+                <div class="value">{{ metrics.auc }}</div>
+                <div class="label">Validation AUC</div>
+            </div>
+            <div class="metric-card">
+                <div class="value">{{ metrics.precision }}</div>
+                <div class="label">Precision</div>
+            </div>
+            <div class="metric-card">
+                <div class="value">{{ metrics.recall }}</div>
+                <div class="label">Recall</div>
+            </div>
+        </div>
+
+        <h2>2. Adversarial Testing Results</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Threshold</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Total Attack Attempts</td>
+                <td>{{ attack_results.total_attacks }}</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Successful Perturbations</td>
+                <td>{{ attack_results.successful_perturbations }}</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Successful Evasions</td>
+                <td>{{ attack_results.successful_evasions }}</td>
+                <td>&lt; 10%</td>
+                <td>{{ 'PASS' if attack_results.evasion_rate < 0.10 else 'FAIL' }}</td>
+            </tr>
+            <tr>
+                <td>Evasion Rate</td>
+                <td>{{ "%.2f"|format(attack_results.evasion_rate * 100) }}%</td>
+                <td>&lt; 10%</td>
+                <td>{{ 'PASS' if attack_results.evasion_rate < 0.10 else 'FAIL' }}</td>
+            </tr>
+            <tr>
+                <td>Avg Score Reduction</td>
+                <td>{{ "%.4f"|format(attack_results.avg_score_reduction) }}</td>
+                <td>&lt; 0.20</td>
+                <td>{{ 'PASS' if attack_results.avg_score_reduction < 0.20 else 'FAIL' }}</td>
+            </tr>
+        </table>
+
+        <h2>3. Feature Importance Analysis</h2>
+        <p>The model relies on the following features for fraud detection:</p>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>Importance</th>
+                <th>Description</th>
+            </tr>
+            {% for feature in feature_importance %}
+            <tr>
+                <td>{{ feature.name }}</td>
+                <td>{{ "%.2f"|format(feature.importance * 100) }}%</td>
+                <td>{{ feature.description }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% if shap_plot_path %}
+        <h2>4. SHAP Explanation (Sample Transaction)</h2>
+        <div class="chart-container">
+            <img src="{{ shap_plot_path }}" alt="SHAP Waterfall Plot">
+        </div>
+        <p><em>This waterfall plot shows how each feature contributes to the fraud probability for a sample high-risk transaction.</em></p>
+        {% endif %}
+
+        <h2>5. Key Findings</h2>
+        <ul class="findings-list">
+            {% for finding in findings %}
+            <li>{{ finding }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>6. Recommendations</h2>
+        {% for rec in recommendations %}
+        <div class="recommendation">
+            <strong>{{ rec.title }}:</strong> {{ rec.description }}
+        </div>
+        {% endfor %}
+
+        <h2>7. Compliance Statement</h2>
+        <p>This assessment has been conducted in accordance with SR 11-7 guidance on Model Risk Management. The evaluation includes:</p>
+        <ul>
+            <li>Conceptual soundness review of model methodology</li>
+            <li>Adversarial robustness testing using LLM-based red team attacks</li>
+            <li>Explainability analysis using SHAP values</li>
+            <li>Documentation of model limitations and assumptions</li>
+        </ul>
+
+        <div class="footer">
+            <p>Generated by Adversarial Fraud Detection System | {{ report_date }}</p>
+            <p>This report is for internal risk management purposes only.</p>
+        </div>
+    </div>
+</body>
+</html>
