@@ -1,8 +1,0 @@
-Collecting plotly
-  Downloading plotly-6.5.2-py3-none-any.whl.metadata (8.5 kB)
-Requirement already satisfied: narwhals>=1.15.1 in c:\projects\adhoc_projects\llm_usecases\adversarial_fraud_detection\.fraud-venv\lib\site-packages (from plotly) (2.15.0)
-Requirement already satisfied: packaging in c:\projects\adhoc_projects\llm_usecases\adversarial_fraud_detection\.fraud-venv\lib\site-packages (from plotly) (25.0)
-Downloading plotly-6.5.2-py3-none-any.whl (9.9 MB)
-   ---------------------------------------- 9.9/9.9 MB 24.2 MB/s  0:00:00
-Installing collected packages: plotly
-Successfully installed plotly-6.5.2
