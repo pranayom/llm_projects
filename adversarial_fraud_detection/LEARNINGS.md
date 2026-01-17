@@ -272,6 +272,45 @@ np.random.seed(42)  # In test setup
 
 ---
 
+---
+
+### 6. Using Synthetic vs Real Data for Red Team Testing
+
+**Issue:**
+Initial red team tests used randomly generated synthetic transactions. These had near-zero fraud scores, making evasion testing meaningless.
+
+**Example (Synthetic):**
+```
+Original Score: 0.000 -> Modified Score: 0.000
+Evasion Rate: 66% (but meaningless - nothing to evade!)
+```
+
+**Solution:**
+Updated `create_test_transactions()` in `src/red_team.py` to sample actual fraud cases from the PaySim dataset:
+
+```python
+def _load_real_fraud_samples(n: int) -> List[Transaction]:
+    """Load actual fraud cases from PaySim dataset."""
+    df = download_paysim()
+    fraud_df = df[df['isFraud'] == 1]  # Filter for real fraud
+    sampled = fraud_df.sample(n=n)
+    # Convert to Transaction objects...
+```
+
+**Results (Real Data):**
+```
+Original Score: 0.780 -> Modified Score: 0.000  (EVADED!)
+Avg Score Reduction: 0.7691
+```
+
+**Best Practice:**
+- Always test adversarial attacks against data the model actually flags as positive
+- For fraud detection: use real fraud cases, not synthetic data
+- For classification: use high-confidence predictions from the target class
+- This reveals true model vulnerabilities, not artifacts of test data
+
+---
+
 ## Future Improvements
 
 1. **Structured Output** - Use Ollama's JSON mode for more reliable parsing

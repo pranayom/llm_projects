@@ -195,8 +195,68 @@ class RedTeamLoop:
         )
 
 
-def create_test_transactions(n: int = 5) -> List[Transaction]:
-    """Create sample fraudulent transactions for testing."""
+def create_test_transactions(n: int = 5, use_real_data: bool = True) -> List[Transaction]:
+    """
+    Create sample fraudulent transactions for testing.
+
+    Args:
+        n: Number of transactions to generate
+        use_real_data: If True, sample from actual PaySim fraud cases.
+                       If False, generate synthetic transactions.
+
+    Returns:
+        List of Transaction objects representing fraud cases
+    """
+    if use_real_data:
+        return _load_real_fraud_samples(n)
+    else:
+        return _generate_synthetic_transactions(n)
+
+
+def _load_real_fraud_samples(n: int) -> List[Transaction]:
+    """Load actual fraud cases from PaySim dataset."""
+    from data.paysim_download import download_paysim, preprocess
+
+    print("Loading real fraud samples from PaySim dataset...")
+
+    # Load and preprocess data
+    df = download_paysim()
+    df = preprocess(df)
+
+    # Filter for fraud cases only
+    fraud_df = df[df['isFraud'] == 1].copy()
+    print(f"Found {len(fraud_df)} fraud cases in dataset")
+
+    # Sample n transactions (or all if n > available)
+    n_samples = min(n, len(fraud_df))
+    sampled = fraud_df.sample(n=n_samples, random_state=42)
+
+    transactions = []
+    for _, row in sampled.iterrows():
+        try:
+            # Calculate velocity_error from the data
+            expected_balance = row['oldbalanceOrg'] - row['amount']
+            velocity_error = 1 if abs(row['newbalanceOrig'] - expected_balance) > 0.01 else 0
+
+            txn = Transaction(
+                amount=float(row['amount']),
+                hour=int(row['hour']),
+                oldbalanceOrg=float(row['oldbalanceOrg']),
+                newbalanceOrig=float(row['newbalanceOrig']),
+                velocity_error=velocity_error
+            )
+            transactions.append(txn)
+        except Exception as e:
+            # Skip invalid transactions (e.g., balance constraint violations)
+            print(f"Skipping invalid transaction: {e}")
+            continue
+
+    print(f"Loaded {len(transactions)} valid fraud transactions")
+    return transactions
+
+
+def _generate_synthetic_transactions(n: int) -> List[Transaction]:
+    """Generate synthetic fraudulent transactions (fallback)."""
     np.random.seed(42)
     transactions = []
 
